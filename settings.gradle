@@ -22,6 +22,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "cloud_reader_2"
 include ':app'
-include ':lib'
+include ':cloud_reader'
 include ':local'
 include ':yandex_disk'
