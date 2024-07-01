@@ -15,7 +15,7 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
 
-class YandexCloudReader(
+class YandexDiskCloudReader(
     private val authToken: String,
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().build(),
     private val gson: Gson = Gson()
