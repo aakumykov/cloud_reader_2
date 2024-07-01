@@ -1,4 +1,4 @@
-package com.github.aakumykov.cloud_reader.local_cloud_reader
+package com.github.aakumykov.local_cloud_reader
 
 import com.github.aakumykov.cloud_reader.CloudReader
 import java.io.File
