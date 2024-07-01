@@ -38,4 +38,8 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
+
+    api libs.okhttp
+    api libs.gson
+    api libs.disk.restapi.sdk
 }
