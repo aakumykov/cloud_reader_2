@@ -60,7 +60,10 @@ class MainActivity : AppCompatActivity() {
                 try {
                     appendInfo("Каталог существует: ${cloudReader.fileExists(selectedDir.toString()).getOrThrow()}")
                     appendInfo("Ссылка для 'скачивания': ${cloudReader.getDownloadLink(selectedDir.toString()).getOrThrow()}")
-                    appendInfo("Поток чтения: ${cloudReader.getFileInputStream(selectedDir.toString()).getOrThrow()}")
+
+                    cloudReader.getFileInputStream(selectedDir.toString()).getOrThrow().use {
+                        appendInfo("Поток чтения: $it")
+                    }
 
                 } catch (t: Throwable) {
                     showError(t.message ?: t.javaClass.simpleName)
@@ -76,9 +79,12 @@ class MainActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 try {
-                    appendInfo("Файл существует: ${cloudReader.fileExists(selectedDir.toString()).getOrThrow()}")
-                    appendInfo("Ссылка для 'скачивания': ${cloudReader.getDownloadLink(selectedDir.toString()).getOrThrow()}")
-                    appendInfo("Поток чтения: ${cloudReader.getFileInputStream(selectedDir.toString()).getOrThrow()}")
+                    appendInfo("Файл существует: ${cloudReader.fileExists(selectedFile.toString()).getOrThrow()}")
+                    appendInfo("Ссылка для 'скачивания': ${cloudReader.getDownloadLink(selectedFile.toString()).getOrThrow()}")
+
+                    cloudReader.getFileInputStream(selectedFile.toString()).getOrThrow().use {
+                        appendInfo("Поток чтения: $it")
+                    }
 
                 } catch (t: Throwable) {
                     showError(t.message ?: t.javaClass.simpleName)
