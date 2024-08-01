@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">cloud_reader_2</string>
+    <string name="select_and_read_dir">Выбрать и прочитать каталог</string>
+    <string name="error_selecting_dir">Ошибка выбора каталога</string>
 </resources>
