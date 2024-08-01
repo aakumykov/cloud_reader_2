@@ -8,10 +8,80 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <Button
-        android:id="@+id/readDirButton"
-        android:layout_width="match_parent"
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/select_and_read_dir" />
+        android:layout_gravity="center_horizontal">
+        <Button
+            style="?attr/materialButtonStyle"
+            android:id="@+id/selectDirButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбрать каталог"
+            android:layout_weight="1"
+            />
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:id="@+id/readDirButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Прочитать"
+            android:layout_weight="1"
+            />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <Button
+            style="?attr/materialButtonStyle"
+            android:id="@+id/selectFileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Выбрать файл"
+            android:backgroundTint="#2196F3"
+            android:layout_weight="1"
+            />
+        <Button
+            style="?attr/materialButtonOutlinedStyle"
+            android:id="@+id/readFileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Прочитать"
+            android:layout_weight="1"
+            />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/infoView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                tools:text="Результат" />
+
+            <TextView
+                android:id="@+id/errorView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:textColor="@color/design_default_color_error"
+                tools:text="Ошибка" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

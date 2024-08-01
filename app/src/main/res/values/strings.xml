@@ -2,4 +2,11 @@
     <string name="app_name">cloud_reader_2</string>
     <string name="select_and_read_dir">Выбрать и прочитать каталог</string>
     <string name="error_selecting_dir">Ошибка выбора каталога</string>
+    <string name="select_and_read_file">Выбрать файл</string>
+    <string name="error_selecting_file">Ошибка выбора файла</string>
+    <string name="empty_string" />
+    <string name="error_creating_document_file_from_uri">Ошибка получения DocumentFile из URI: %1$s</string>
+    <string name="dir_is_selected">Выбран каталог: %1$s</string>
+    <string name="error_no_dir_selected">Не выбран каталог</string>
+    <string name="error_no_file_selected">Не выбран файл</string>
 </resources>
