@@ -3,10 +3,10 @@
 buildscript {
     ext {
         commonMajorVersionNumber = 3
-        commonMinorVersionNumber = 1
+        commonMinorVersionNumber = 2
         commonPatchVersionNumber = 0
         commonVersionSuffix = "alpha"
-        commonVersionCode = 16
+        commonVersionCode = 17
     }
 }
 

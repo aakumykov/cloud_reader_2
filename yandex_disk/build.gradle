@@ -19,7 +19,7 @@ project.ext {
 }
 
 android {
-    namespace 'com.github.aakumykov.yandex_disk_cloud_reader'
+    namespace groupId + '.' + artifactId
     compileSdk 34
 
     defaultConfig {
