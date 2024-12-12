@@ -13,6 +13,10 @@ import okhttp3.Response
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
+import kotlin.concurrent.thread
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class YandexDiskCloudReader(
     private val authToken: String,
@@ -21,6 +25,17 @@ class YandexDiskCloudReader(
 ) : CloudReader {
 
     override suspend fun getDownloadLink(absolutePath: String): Result<String> {
+        return suspendCoroutine { continuation: Continuation<Result<String>> ->
+            thread {
+                getDownloadLinkSimple(absolutePath).let {
+                    continuation.resume(it)
+                }
+            }
+        }
+    }
+
+
+    override fun getDownloadLinkSimple(absolutePath: String): Result<String> {
         return try {
             Result.success(getDownloadLinkDirect(absolutePath))
         } catch (e: IOException) {
@@ -30,10 +45,22 @@ class YandexDiskCloudReader(
         }
     }
 
+
+    // TODO: сделать отменяемой?
     override suspend fun getFileInputStream(absolutePath: String): Result<InputStream> {
+        return suspendCoroutine { continuation ->
+            thread {
+                getFileInputStreamSimple(absolutePath).let {
+                    continuation.resume(it)
+                }
+            }
+        }
+    }
+
+
+    override fun getFileInputStreamSimple(absolutePath: String): Result<InputStream> {
         return try {
             getDownloadLinkDirect(absolutePath).let { url ->
-
                 Request.Builder()
                     .url(url)
                     .build()
@@ -53,7 +80,20 @@ class YandexDiskCloudReader(
         }
     }
 
+
+
     override suspend fun fileExists(absolutePath: String): Result<Boolean> {
+        return suspendCoroutine { continuation ->
+            thread {
+                fileExistsSimple(absolutePath).let {
+                    continuation.resume(it)
+                }
+            }
+        }
+    }
+
+
+    override fun fileExistsSimple(absolutePath: String): Result<Boolean> {
         return try {
             getFileInfoDirect(absolutePath).let { Result.success(true) }
         }
@@ -64,6 +104,7 @@ class YandexDiskCloudReader(
             Result.failure(t)
         }
     }
+
 
 
     @Throws(IllegalArgumentException::class)
@@ -81,6 +122,7 @@ class YandexDiskCloudReader(
             .build()
     }
 
+
     @Throws(IOException::class, IllegalArgumentException::class)
     private fun getDownloadLinkDirect(absolutePath: String): String {
 
@@ -96,6 +138,7 @@ class YandexDiskCloudReader(
             }
         }
     }
+
 
     @Throws(FileNotFoundException::class, IOException::class, IllegalArgumentException::class)
     private fun getFileInfoDirect(absolutePath: String): Resource {
@@ -116,6 +159,7 @@ class YandexDiskCloudReader(
             }
         }
     }
+
 
     private fun urlWithPath(baseUrl: String, absolutePath: String): HttpUrl {
         return baseUrl.toHttpUrl().newBuilder()
