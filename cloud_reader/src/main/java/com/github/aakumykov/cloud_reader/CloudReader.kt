@@ -7,4 +7,5 @@ interface CloudReader {
     suspend fun getDownloadLink(absolutePath: String): Result<String>
     suspend fun getFileInputStream(absolutePath: String): Result<InputStream>
     suspend fun fileExists(absolutePath: String): Result<Boolean>
+    suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata>
 }

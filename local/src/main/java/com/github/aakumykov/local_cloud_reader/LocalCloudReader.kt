@@ -1,6 +1,7 @@
 package com.github.aakumykov.local_cloud_reader
 
 import com.github.aakumykov.cloud_reader.CloudReader
+import com.github.aakumykov.cloud_reader.FileMetadata
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -25,6 +26,24 @@ class LocalCloudReader : CloudReader {
             Result.success(fileExistsSimple(absolutePath))
         } catch (t: Throwable) {
             Result.failure(t)
+        }
+    }
+
+    override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata> {
+        return try {
+            File(absolutePath).let { file ->
+                FileMetadata(
+                    name = file.name,
+                    absolutePath = file.absolutePath,
+                    isDir = file.isDirectory,
+                    created = file.lastModified(),
+                    modified = file.lastModified()
+                ).let {
+                    Result.success(it)
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 

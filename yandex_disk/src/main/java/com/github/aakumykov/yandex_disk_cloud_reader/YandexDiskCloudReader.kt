@@ -1,6 +1,7 @@
 package com.github.aakumykov.yandex_disk_cloud_reader
 
 import com.github.aakumykov.cloud_reader.CloudReader
+import com.github.aakumykov.cloud_reader.FileMetadata
 import com.google.gson.Gson
 import com.yandex.disk.rest.json.ApiError
 import com.yandex.disk.rest.json.Link
@@ -59,6 +60,23 @@ class YandexDiskCloudReader(
         }
         catch (e: FileNotFoundException) {
             Result.success(false)
+        }
+        catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata> {
+        return try {
+            getFileInfoDirect(absolutePath).let { resource ->
+                Result.success(FileMetadata(
+                    name = resource.name,
+                    absolutePath = resource.path.path,
+                    isDir = resource.isDir,
+                    created = resource.created.time,
+                    modified = resource.modified.time
+                ))
+            }
         }
         catch (t: Throwable) {
             Result.failure(t)
