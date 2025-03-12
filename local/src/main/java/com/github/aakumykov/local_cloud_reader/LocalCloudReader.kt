@@ -35,6 +35,7 @@ class LocalCloudReader : CloudReader {
                 FileMetadata(
                     name = file.name,
                     absolutePath = file.absolutePath,
+                    size = if (file.isDirectory) 0L else file.length(),
                     isDir = file.isDirectory,
                     created = file.lastModified(),
                     modified = file.lastModified()

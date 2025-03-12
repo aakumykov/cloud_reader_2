@@ -72,6 +72,7 @@ class YandexDiskCloudReader(
                 Result.success(FileMetadata(
                     name = resource.name,
                     absolutePath = resource.path.path,
+                    size = resource.size,
                     isDir = resource.isDir,
                     created = resource.created.time,
                     modified = resource.modified.time
