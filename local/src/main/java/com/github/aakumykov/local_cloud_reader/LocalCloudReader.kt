@@ -2,6 +2,7 @@ package com.github.aakumykov.local_cloud_reader
 
 import com.github.aakumykov.cloud_reader.CloudReader
 import com.github.aakumykov.cloud_reader.FileMetadata
+import com.github.aakumykov.cloud_reader.absolutePathFrom
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -27,6 +28,22 @@ class LocalCloudReader : CloudReader {
         } catch (t: Throwable) {
             Result.failure(t)
         }
+    }
+
+    override suspend fun fileExists(basePath: String, fileName: String): Result<Boolean> {
+        return fileExists(absolutePathFrom(basePath,fileName))
+    }
+
+    override suspend fun dirExists(absolutePath: String): Result<Boolean> {
+        return try {
+            Result.success(File(absolutePath).let { it.isDirectory && it.exists() })
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun dirExists(basePath: String, fileName: String): Result<Boolean> {
+        return dirExists(absolutePathFrom(basePath,fileName))
     }
 
     override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata> {
