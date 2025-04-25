@@ -99,6 +99,34 @@ class YandexDiskCloudReader(
         }
     }
 
+    override suspend fun listDir(absolutePath: String): Result<List<FileMetadata>?> {
+        return try {
+            val resource = getFileInfoDirect(absolutePath)
+            Result.success(
+                if (resource.isDir) buildList {
+                    resource.resourceList.items.forEach { resource ->
+                        add(FileMetadata(
+                            name = resource.name,
+                            absolutePath = resource.path.path,
+                            size = resource.size,
+                            isDir = resource.isDir,
+                            created = resource.created.time,
+                            modified = resource.modified.time
+                        ))
+                    }
+                } else {
+                    null
+                }
+            )
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun listDir(basePath: String, dirName: String): Result<List<FileMetadata>?> {
+        return listDir(absolutePathFrom(basePath, dirName))
+    }
+
 
     @Throws(IllegalArgumentException::class)
     private fun httpRequest(url: HttpUrl, paramsMap: Map<HttpMethod, EmptyHttpParam>): Request {

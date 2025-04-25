@@ -65,5 +65,28 @@ class LocalCloudReader : CloudReader {
         }
     }
 
+    override suspend fun listDir(absolutePath: String): Result<List<FileMetadata>?> {
+        return try {
+            Result.success(
+                File(absolutePath).listFiles()?.map { file: File ->
+                    FileMetadata(
+                        name = file.name,
+                        absolutePath = file.absolutePath,
+                        size = file.length(),
+                        isDir = file.isDirectory,
+                        created = file.lastModified(),
+                        modified = file.lastModified(),
+                    )
+                }
+            )
+        } catch (t: Throwable) {
+            Result.failure(t)
+        }
+    }
+
+    override suspend fun listDir(basePath: String, dirName: String): Result<List<FileMetadata>?> {
+        return listDir(absolutePathFrom(basePath,dirName))
+    }
+
     private fun fileExistsSimple(absolutePath: String): Boolean = File(absolutePath).exists()
 }
