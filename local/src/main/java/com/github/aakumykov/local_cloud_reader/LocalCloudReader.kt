@@ -46,19 +46,23 @@ class LocalCloudReader : CloudReader {
         return dirExists(absolutePathFrom(basePath,fileName))
     }
 
-    override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata> {
+    override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata?> {
         return try {
             File(absolutePath).let { file ->
-                FileMetadata(
-                    name = file.name,
-                    absolutePath = file.absolutePath,
-                    size = if (file.isDirectory) 0L else file.length(),
-                    isDir = file.isDirectory,
-                    created = file.lastModified(),
-                    modified = file.lastModified(),
-                    childCount = file.listFiles()?.size
-                ).let {
-                    Result.success(it)
+                if (file.exists()) {
+                    FileMetadata(
+                        name = file.name,
+                        absolutePath = file.absolutePath,
+                        size = if (file.isDirectory) 0L else file.length(),
+                        isDir = file.isDirectory,
+                        created = file.lastModified(),
+                        modified = file.lastModified(),
+                        childCount = file.listFiles()?.size
+                    ).let {
+                        Result.success(it)
+                    }
+                } else {
+                    Result.success(null)
                 }
             }
         } catch (e: Exception) {
@@ -66,7 +70,7 @@ class LocalCloudReader : CloudReader {
         }
     }
 
-    override suspend fun getFileMetadata(basePath: String, fileName: String): Result<FileMetadata> {
+    override suspend fun getFileMetadata(basePath: String, fileName: String): Result<FileMetadata?> {
         return getFileMetadata(absolutePathFrom(basePath, fileName))
     }
 

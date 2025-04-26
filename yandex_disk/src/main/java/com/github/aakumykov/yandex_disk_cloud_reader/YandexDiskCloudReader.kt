@@ -72,8 +72,8 @@ class YandexDiskCloudReader(
     }
 
     override suspend fun dirExists(absolutePath: String): Result<Boolean> {
-        return getFileMetadata(absolutePath).map { metadata ->
-            metadata.isDir
+        return getFileMetadata(absolutePath).map { metadata: FileMetadata? ->
+            metadata?.isDir ?: false
         }
     }
 
@@ -81,7 +81,7 @@ class YandexDiskCloudReader(
         return dirExists(absolutePathFrom(basePath, fileName))
     }
 
-    override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata> {
+    override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata?> {
         return try {
             getFileInfoDirect(absolutePath).let { resource ->
                 Result.success(FileMetadata(
@@ -95,12 +95,15 @@ class YandexDiskCloudReader(
                 ))
             }
         }
+        catch (e: FileNotFoundException) {
+            Result.success(null)
+        }
         catch (t: Throwable) {
             Result.failure(t)
         }
     }
 
-    override suspend fun getFileMetadata(basePath: String, fileName: String): Result<FileMetadata> {
+    override suspend fun getFileMetadata(basePath: String, fileName: String): Result<FileMetadata?> {
         return getFileMetadata(absolutePathFrom(basePath, fileName))
     }
 
