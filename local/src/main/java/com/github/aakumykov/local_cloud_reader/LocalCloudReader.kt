@@ -66,6 +66,10 @@ class LocalCloudReader : CloudReader {
         }
     }
 
+    override suspend fun getFileMetadata(basePath: String, fileName: String): Result<FileMetadata> {
+        return getFileMetadata(absolutePathFrom(basePath, fileName))
+    }
+
     override suspend fun listDir(absolutePath: String): Result<List<FileMetadata>?> {
         return try {
             Result.success(

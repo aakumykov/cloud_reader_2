@@ -22,7 +22,10 @@ interface CloudReader {
 
     suspend fun dirExists(basePath: String, fileName: String): Result<Boolean>
 
+
     suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata>
+
+    suspend fun getFileMetadata(basePath: String, fileName: String): Result<FileMetadata>
 
 
     /**
