@@ -55,7 +55,8 @@ class LocalCloudReader : CloudReader {
                     size = if (file.isDirectory) 0L else file.length(),
                     isDir = file.isDirectory,
                     created = file.lastModified(),
-                    modified = file.lastModified()
+                    modified = file.lastModified(),
+                    children = list2fileMetadata(file.listFiles())
                 ).let {
                     Result.success(it)
                 }
@@ -76,6 +77,7 @@ class LocalCloudReader : CloudReader {
                         isDir = file.isDirectory,
                         created = file.lastModified(),
                         modified = file.lastModified(),
+                        children = null,
                     )
                 }
             )
@@ -89,4 +91,18 @@ class LocalCloudReader : CloudReader {
     }
 
     private fun fileExistsSimple(absolutePath: String): Boolean = File(absolutePath).exists()
+
+    private fun list2fileMetadata(files: Array<File>?): Iterable<FileMetadata>? {
+        return files?.map {
+            FileMetadata(
+                name = it.name,
+                absolutePath = it.absolutePath,
+                size = it.length(),
+                isDir = it.isDirectory,
+                created = it.lastModified(),
+                modified = it.lastModified(),
+                children = null,
+            )
+        }
+    }
 }

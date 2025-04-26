@@ -90,7 +90,8 @@ class YandexDiskCloudReader(
                     size = resource.size,
                     isDir = resource.isDir,
                     created = resource.created.time,
-                    modified = resource.modified.time
+                    modified = resource.modified.time,
+                    children = resourceList2fileMetadata(resource.resourceList.items)
                 ))
             }
         }
@@ -111,7 +112,8 @@ class YandexDiskCloudReader(
                             size = resource.size,
                             isDir = resource.isDir,
                             created = resource.created.time,
-                            modified = resource.modified.time
+                            modified = resource.modified.time,
+                            children = null
                         ))
                     }
                 } else {
@@ -235,4 +237,17 @@ class YandexDiskCloudReader(
     private class HttpParam(name: String, value: String) : EmptyHttpParam(name, value)
 
 
+    private fun resourceList2fileMetadata(resourceList: List<Resource>): Iterable<FileMetadata> {
+        return resourceList.map { resource ->
+            FileMetadata(
+                name = resource.name,
+                absolutePath = resource.path.path,
+                size = resource.size,
+                isDir = resource.isDir,
+                created = resource.created.time,
+                modified = resource.modified.time,
+                children = null
+            )
+        }
+    }
 }
