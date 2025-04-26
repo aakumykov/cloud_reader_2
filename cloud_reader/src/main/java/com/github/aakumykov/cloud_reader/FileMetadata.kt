@@ -1,5 +1,8 @@
 package com.github.aakumykov.cloud_reader
 
+/**
+ * @param childCount null if not checked, integer if checked.
+ */
 data class FileMetadata(
     val name: String,
     val absolutePath: String,
@@ -7,4 +10,5 @@ data class FileMetadata(
     val isDir: Boolean,
     val created: Long,
     val modified: Long,
+    val childCount: Int?,
 )

@@ -55,7 +55,8 @@ class LocalCloudReader : CloudReader {
                     size = if (file.isDirectory) 0L else file.length(),
                     isDir = file.isDirectory,
                     created = file.lastModified(),
-                    modified = file.lastModified()
+                    modified = file.lastModified(),
+                    childCount = file.listFiles()?.size
                 ).let {
                     Result.success(it)
                 }
@@ -76,6 +77,7 @@ class LocalCloudReader : CloudReader {
                         isDir = file.isDirectory,
                         created = file.lastModified(),
                         modified = file.lastModified(),
+                        childCount = null
                     )
                 }
             )
