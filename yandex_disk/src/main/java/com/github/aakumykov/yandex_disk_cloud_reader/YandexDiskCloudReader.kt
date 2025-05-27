@@ -91,7 +91,7 @@ class YandexDiskCloudReader(
                     isDir = resource.isDir,
                     created = resource.created.time,
                     modified = resource.modified.time,
-                    childCount = resource.resourceList.items.size
+                    childCount = if (resource.isDir) resource.resourceList.items.size else 0
                 ))
             }
         }
