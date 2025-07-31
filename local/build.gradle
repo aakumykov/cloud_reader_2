@@ -51,7 +51,7 @@ android {
 
 dependencies {
 
-    api project(':cloud_reader')
+    implementation project(':cloud_reader')
 
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
