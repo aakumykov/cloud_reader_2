@@ -1,5 +1,6 @@
 package com.github.aakumykov.cloud_reader
 
+import android.media.audiofx.DynamicsProcessing.Limiter
 import java.io.InputStream
 
 // TODO: переименовать в StorageReader
@@ -33,10 +34,28 @@ interface CloudReader {
      * 1) List of FileMetadata
      * 2) NULL if checked fs item is not a dir.
      */
+    @Deprecated("Используй версию с limit+offset")
     suspend fun listDir(absolutePath: String): Result<List<FileMetadata>?>
+
 
     /**
      * See description of [listDir] (absolutePath: String)
      */
+    @Deprecated("Используй версию с limit+offset")
     suspend fun listDir(basePath: String, dirName: String): Result<List<FileMetadata>?>
+
+
+    suspend fun listDir(
+        absolutePath: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<FileMetadata>?>
+
+
+    suspend fun listDir(
+        basePath: String,
+        dirName: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<FileMetadata>?>
 }

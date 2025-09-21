@@ -98,5 +98,34 @@ class LocalCloudReader : CloudReader {
         return listDir(absolutePathFrom(basePath,dirName))
     }
 
+
+    /**
+     * В настоящее время offset и limit не используются.
+     */
+    override suspend fun listDir(
+        absolutePath: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<FileMetadata>?> {
+        return listDir(absolutePath)
+    }
+
+    /**
+     * В настоящее время offset и limit не используются.
+     */
+    override suspend fun listDir(
+        basePath: String,
+        dirName: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<FileMetadata>?> {
+        return listDir(
+            absolutePathFrom(basePath,dirName),
+            offset,
+            limit
+        )
+    }
+
+
     private fun fileExistsSimple(absolutePath: String): Boolean = File(absolutePath).exists()
 }

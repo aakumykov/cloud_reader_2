@@ -57,7 +57,7 @@ class YandexDiskCloudReader(
 
     override suspend fun fileExists(absolutePath: String): Result<Boolean> {
         return try {
-            getFileInfoDirect(absolutePath).let { Result.success(true) }
+            getFileInfoDirect(absolutePath, DEFAULT_OFFSET, DEFAULT_LIMIT).let { Result.success(true) }
         }
         catch (e: FileNotFoundException) {
             Result.success(false)
@@ -83,7 +83,7 @@ class YandexDiskCloudReader(
 
     override suspend fun getFileMetadata(absolutePath: String): Result<FileMetadata?> {
         return try {
-            getFileInfoDirect(absolutePath).let { resource ->
+            getFileInfoDirect(absolutePath, DEFAULT_OFFSET, DEFAULT_LIMIT).let { resource ->
                 Result.success(FileMetadata(
                     name = resource.name,
                     absolutePath = resource.path.path,
@@ -108,8 +108,21 @@ class YandexDiskCloudReader(
     }
 
     override suspend fun listDir(absolutePath: String): Result<List<FileMetadata>?> {
+        return listDir(absolutePath, offset = DEFAULT_OFFSET, limit = DEFAULT_LIMIT)
+    }
+
+    override suspend fun listDir(basePath: String, dirName: String): Result<List<FileMetadata>?> {
+        return listDir(absolutePathFrom(basePath, dirName))
+    }
+
+
+    override suspend fun listDir(
+        absolutePath: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<FileMetadata>?> {
         return try {
-            val resource = getFileInfoDirect(absolutePath)
+            val resource = getFileInfoDirect(absolutePath,offset, limit)
             Result.success(
                 if (resource.isDir) buildList {
                     resource.resourceList.items.forEach { resource ->
@@ -132,8 +145,17 @@ class YandexDiskCloudReader(
         }
     }
 
-    override suspend fun listDir(basePath: String, dirName: String): Result<List<FileMetadata>?> {
-        return listDir(absolutePathFrom(basePath, dirName))
+    override suspend fun listDir(
+        basePath: String,
+        dirName: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<FileMetadata>?> {
+        return listDir(
+            absolutePathFrom(basePath, dirName),
+            offset,
+            limit
+        )
     }
 
 
@@ -169,10 +191,19 @@ class YandexDiskCloudReader(
     }
 
     @Throws(FileNotFoundException::class, IOException::class, IllegalArgumentException::class)
-    private fun getFileInfoDirect(absolutePath: String): Resource {
+    private fun getFileInfoDirect(
+        absolutePath: String,
+        offset: Int,
+        limit: Int
+    ): Resource {
 
         val request = httpRequest(
-            urlWithPath(RESOURCES_BASE_URL, absolutePath),
+            urlWithParams(
+                RESOURCES_BASE_URL,
+                PARAM_PATH to absolutePath,
+                PARAM_OFFSET to offset.toString(),
+                PARAM_LIMIT to limit.toString()
+            ),
             mapOf(
                 HttpMethod.HEADER to HttpParam("Authorization", authToken),
                 HttpMethod.GET to EmptyHttpParam(),
@@ -188,10 +219,21 @@ class YandexDiskCloudReader(
         }
     }
 
+
     private fun urlWithPath(baseUrl: String, absolutePath: String): HttpUrl {
+        return urlWithParams(baseUrl, PARAM_PATH to absolutePath)
+    }
+
+
+    private fun urlWithParams(
+        baseUrl: String,
+        vararg params: Pair<String,String> = arrayOf()
+    ): HttpUrl {
         return baseUrl.toHttpUrl().newBuilder()
             .apply {
-                addQueryParameter("path", absolutePath)
+                params.forEach {
+                    addQueryParameter(it.first, it.second)
+                }
             }.build()
     }
 
@@ -233,6 +275,11 @@ class YandexDiskCloudReader(
         private const val DISK_BASE_URL = "https://cloud-api.yandex.net/v1/disk"
         private const val RESOURCES_BASE_URL = "$DISK_BASE_URL/resources"
         private const val DOWNLOAD_BASE_URL = "$RESOURCES_BASE_URL/download"
+        private const val DEFAULT_OFFSET = 0
+        private const val DEFAULT_LIMIT = 20
+        private const val PARAM_PATH = "path"
+        private const val PARAM_OFFSET = "offset"
+        private const val PARAM_LIMIT = "limit"
     }
 
     private enum class HttpMethod {
